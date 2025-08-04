@@ -14,4 +14,4 @@ This project focuses on predicting Premier League match outcomes by combining **
 
 ### Focus
 
-This pipeline emphasizes: **Automation**, **Reproducibility**, **Practical Sports Analytics**
+This pipeline emphasizes: **Automation**, **Reproducibility** and **Practical Sports Analytics**
