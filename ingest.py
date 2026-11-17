@@ -36,5 +36,5 @@ def download_season(start_year: int) -> pd.DataFrame:
     return df
 
 def clean(df: pd.DataFrame) -> pd.DataFrame:
-    
+    df = df.dropna(subset = ["Date", "HomeTeam", "AwayTeam", "FTR"]).copy()
 
