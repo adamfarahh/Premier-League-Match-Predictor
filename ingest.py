@@ -37,4 +37,6 @@ def download_season(start_year: int) -> pd.DataFrame:
 
 def clean(df: pd.DataFrame) -> pd.DataFrame:
     df = df.dropna(subset = ["Date", "HomeTeam", "AwayTeam", "FTR"]).copy()
+    df["Date"] = pd.to_datetime(df["Date"], dayfirst = True, format = "mixed")
+    
 
