@@ -31,3 +31,5 @@ def download_season(start_year: int) -> pd.DataFrame:
     response = requests.get(URL.format(season=season_code(start_year)), timeout = 30)
     response.raise_for_status()
     df = pd.read_csv(io.StringIO(response.content.decode("latin-1")))
+    df = df[[c for c in KEEP if c in df.columns]].copy()
+    
