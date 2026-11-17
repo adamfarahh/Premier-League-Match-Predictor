@@ -23,3 +23,6 @@ print(matches.shape)
 print(matches.head())
 
 KEEP = ["Date", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR", "B365H", "B365D", "B365A"]
+
+def season_code(start_year: int) -> str:
+    return f"{start_year % 100:02d}{(start_year + 1) % 100:02d}"
