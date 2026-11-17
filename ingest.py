@@ -21,3 +21,5 @@ matches = pd.concat(frames, ignore_index=True)
 
 print(matches.shape)
 print(matches.head())
+
+KEEP = ["Date", "HomeTeam", "AwayTeam", "FTHG", "FTAG", "FTR", "B365H", "B365D", "B365A"]
