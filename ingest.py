@@ -42,3 +42,4 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
     for col in ("B365H", "B365D", "B365A"):
         if col not in df.columns:
             df[col] = np.nan
+    return df
