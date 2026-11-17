@@ -35,3 +35,6 @@ def download_season(start_year: int) -> pd.DataFrame:
     df["Season"] = start_year
     return df
 
+def clean(df: pd.DataFrame) -> pd.DataFrame:
+    
+
