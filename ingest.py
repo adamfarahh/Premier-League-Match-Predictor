@@ -32,4 +32,5 @@ def download_season(start_year: int) -> pd.DataFrame:
     response.raise_for_status()
     df = pd.read_csv(io.StringIO(response.content.decode("latin-1")))
     df = df[[c for c in KEEP if c in df.columns]].copy()
+    df["Season"] = start_year
     
