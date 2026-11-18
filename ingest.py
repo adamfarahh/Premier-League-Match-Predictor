@@ -54,4 +54,7 @@ def devig(df: pd.DataFrame) -> pd.DataFrame: """Convert decimal odds to probabil
 def main(start: int, end: int) -> None:
     RAW.mkdir(parents = True, exist_ok = True)
     frames = []
+    for y in range(start, end + 1):
+        print(f"downloading {y}/{y + 1}")
+        frames.append(download_season(y))
 
