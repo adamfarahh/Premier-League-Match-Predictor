@@ -57,4 +57,8 @@ def main(start: int, end: int) -> None:
     for y in range(start, end + 1):
         print(f"downloading {y}/{y + 1}")
         frames.append(download_season(y))
+    df = devig(clean(pd.concat(frames, ignore_index = True)))
+    PROCESSED.parent.mkdir(parents = True, exist_ok = True)
+    df.to_csv(PROCESSED)
+    print(f"saved {len(df)} matches to {PROCESSED}")
 
