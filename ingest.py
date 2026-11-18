@@ -62,3 +62,9 @@ def main(start: int, end: int) -> None:
     df.to_csv(PROCESSED)
     print(f"saved {len(df)} matches to {PROCESSED}")
 
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--start", type=int, default = 2015)
+    ap.add_argument("--end", type=int, default = 2025)
+    args = parser.parse_args()
+    main(args.start, args.end)
