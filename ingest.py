@@ -51,3 +51,5 @@ def devig(df: pd.DataFrame) -> pd.DataFrame: """Convert decimal odds to probabil
     out[["pH_book", "pD_book", "pA_book"]] = probs
     return out
 
+def main(start: int, end: int) -> None:
+    
