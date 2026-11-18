@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from pandas.plotting._matplotlib import hist
 
 ELO_START = 1500.0
 ELO_K = 20.0
@@ -15,3 +16,13 @@ def build_features(matches: pd.DataFrame) -> pd.DataFrame:
     elo: dict[str, float] = {}
     hist: dict[str, list] = {}
     rows = []
+
+def form(team: str, date) -> tuple [float, float, float, float]:
+    h = hist.get(team, [])[-WINDOW:]
+    if not h:
+        return 1.3, 1.3, 1.3, np.nan
+    pts = np.mean([x[1] for x in h])
+    gf = np.mean([x[2] for x in h])
+    ga = np.mean([x[3] for x in h])
+    rest = min((date - h[-1][0]).days, 14)
+    return pts, gf, ga, rest
