@@ -47,3 +47,7 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
 def devig(df: pd.DataFrame) -> pd.DataFrame: """Convert decimal odds to probabilities that sum to 1 (removes bookmaker margin)"""
     raw = 1.0 / df[["B365H", "B365D", "B365A"]].to_numpy(dtype=float)
     probs = raw / raw.sum(axis =1, keepdims = True)
+    out = df.copy()
+    out[["pH_book", "pD_book", "pA_book"]] = probs
+    return out
+
