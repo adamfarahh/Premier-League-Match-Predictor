@@ -43,3 +43,5 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
         if col not in df.columns:
             df[col] = np.nan
     return df
+
+def devig(df: pd.DataFrame) -> pd.DataFrame:
