@@ -9,3 +9,9 @@ FEATURES = ["elo_diff", "form_pts_diff", "gf_diff", "ga_diff", "rest_diff"]
 
 def _expected(elo_h: float, elo_a: float) -> float:
     return 1.0 / (1.0 + 10 ** (-(elo_h + HOME_ADV - elo_a) / 400.0))
+
+def build_features(matches: pd.DataFrame) -> pd.DataFrame:
+    df = matches.sort_values(["Date", "HomeTeam"]).reset_index(drop=True).copy()
+    elo: dict[str, float] = {}
+    hist: dict[str, list] = {}
+    rows = []
