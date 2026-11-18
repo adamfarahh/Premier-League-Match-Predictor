@@ -52,4 +52,6 @@ def devig(df: pd.DataFrame) -> pd.DataFrame: """Convert decimal odds to probabil
     return out
 
 def main(start: int, end: int) -> None:
-    
+    RAW.mkdir(parents = True, exist_ok = True)
+    frames = []
+
