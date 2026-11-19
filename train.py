@@ -59,4 +59,12 @@ def backtest(df: pd.DataFrame, min_train_seasons: int = 3) -> pd.DataFrame:
         base = train["FTR"].value_counts(normalize = True).reindex(CLASSES).to_numpy()
         pb = np.tile[base, (len(test), 1)]
         row = {"season": test_season, "n": len(test), "ll_model": logloss(test["FTR"].to_numpy(), p), "brier_model": brier(test["FTR"].to_numpy(), p), "ll_naive": logloss(test["FTR"].to_numpy(), pb), "brier_naive": brier(test["FTR"].to_numpy(), pb)}
-        
+
+        book = test[["pH_book", "pD_book", "pA_book"]].dropna()
+        if len(book) == len(test) and len(test) > 0:
+            pk = test[["pH_book", "pD_book", "pA_book"]].dropna()
+            row["ll_book"] = logloss(test["FTR"].to_numpy(), pk)
+            row["brier_book"] = brier(test["FTR"].to_numpy(), pk)
+        out.append(row)
+    return pd.DataFrame(out)
+
