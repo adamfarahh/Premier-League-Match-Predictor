@@ -47,4 +47,10 @@ def synthetic(n_seasons: int = 8, seed: int = 0) -> pd.DataFrame:
                 return df
 
 def backtest(df: pd.DataFrame, min_train_seasons: int = 3) -> pd.DataFrame:
-    
+    seasons = sorted(df["Season"].unique())
+    out = []
+    for test_season in seasons[min_train_seasons:]:
+        train = df[df["Season"] < test_season]
+        test = df[df["Season"] == test_season]
+        model = make_model().fit(train[FEATURES], train["FTR"])
+        p = model.predict_proba(test[FEATURES])
