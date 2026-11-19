@@ -46,3 +46,5 @@ def synthetic(n_seasons: int = 8, seed: int = 0) -> pd.DataFrame:
                 df[["pH_book", "pD_book", "pA_book"]] = np.nan
                 return df
 
+def backtest(df: pd.DataFrame, min_train_seasons: int = 3) -> pd.DataFrame:
+    
