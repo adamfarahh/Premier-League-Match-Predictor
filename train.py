@@ -54,3 +54,5 @@ def backtest(df: pd.DataFrame, min_train_seasons: int = 3) -> pd.DataFrame:
         test = df[df["Season"] == test_season]
         model = make_model().fit(train[FEATURES], train["FTR"])
         p = model.predict_proba(test[FEATURES])
+        p = p[:, [list(model.classes_).index(c) for c in CLASSES]]
+        
