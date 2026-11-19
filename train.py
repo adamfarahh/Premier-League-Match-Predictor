@@ -56,3 +56,7 @@ def backtest(df: pd.DataFrame, min_train_seasons: int = 3) -> pd.DataFrame:
         p = model.predict_proba(test[FEATURES])
         p = p[:, [list(model.classes_).index(c) for c in CLASSES]]
 
+        base = train["FTR"].value_counts(normalize = True).reindex(CLASSES).to_numpy()
+        pb = np.tile[base, (len(test), 1)]
+        row = {"season": test_season, "n": len(test), "ll_model": logloss(test["FTR"].to_numpy(), p), "brier_model": brier(test["FTR"].to_numpy(), p), "ll_naive": logloss(test["FTR"].to_numpy(), pb), "brier_naive": brier(test["FTR"].to_numpy(), pb)}
+        
