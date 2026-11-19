@@ -16,3 +16,7 @@ from ingest import PROCESSED
 CLASSES = ["H", "D", "A"]
 PROCESSED = Path("data/processed/matches_csv")
 MODEL_PATH = Path("models/model.joblib")
+
+def logloss(y: np.ndarray, p: np.ndarray) -> float:
+    idx = [CLASSES.index(c) for c in y]
+    return float(-np.mean(np.log(np.clip(p[np.arrange(len(idx)), idx], 1e-12, 1.0))))
