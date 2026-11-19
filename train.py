@@ -31,4 +31,18 @@ def make_model():
 def synthetic(n_seasons: int = 8, seed: int = 0) -> pd.DataFrame:
     rng = np.random.default_rng(seed)
     teams = [f"T{i}" for i in range(20)]
-    
+    strength = dict(zip(teams, rng.normal(0, 0.25, 20)))
+    rows = []
+    for s in range(n_seasons):
+        day = pd.Timestamp(f"{2015 + s} - 08 - 10")
+        for rnd in range(38):
+            order = rng.permutation(teams)
+            for i in range(0, 20, 2):
+                h, a = order[i], order[i + 1]
+                hg = rng.poisson(np.exp(0.25 + strength[h] - strength[a] * 0.5))
+                ag = rng.poisson(np.exp(0.0 + strength[a] - strength[h] * 0.5))
+                rows.append({"Date": day + pd.Timedelta(days = 7 * rnd), "HomeTeam": h, "AwayTeam": a, "FTHG": hg, "FTAG": ag, "FTR": "H" if hg > ag else "D" if hg == ag else "A", "Season": 2015 + s})
+                df = pd.DataFrame(rows)
+                df[["pH_book", "pD_book", "pA_book"]] = np.nan
+                return df
+
