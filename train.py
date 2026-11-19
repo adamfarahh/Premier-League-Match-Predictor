@@ -78,4 +78,9 @@ def main(use_synth: bool) -> None:
     pd.set_option('display.width', 160)
     print(results.round(4).to_string(index = False))
     print("\nmean:\n", results.drop(columns = ["season", "n"]).mean().round(4).to_string())
-    
+
+    final = make_model().fit(df[FEATURES], df["FTR"])
+    MODEL_PATH.parent.mkdir(exist_ok=True)
+    joblib.dump(final, MODEL_PATH)
+    print(f"\nsaved model to {MODEL_PATH}")
+
