@@ -84,3 +84,8 @@ def main(use_synth: bool) -> None:
     joblib.dump(final, MODEL_PATH)
     print(f"\nsaved model to {MODEL_PATH}")
 
+if __name__ == "__main__":
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--synthetic", action="store_true")
+    main(ap.parse_args().synthetic)
+    
