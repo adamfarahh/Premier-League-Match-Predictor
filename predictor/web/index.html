@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Premier League Match Predictor</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#forecast"><span class="brand-mark" aria-hidden="true">PL</span>Match Predictor</a>
+      <nav aria-label="Dashboard">
+        <a href="#forecast" data-view="forecast" aria-current="page">Forecast</a>
+        <a href="#results" data-view="results">Results</a>
+        <a href="#backtest" data-view="backtest">Backtest</a>
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-content">
+        <h1 id="page-title">Premier League<br>Match Predictor</h1>
+        <p>Forecast a matchup, explore past fixtures, and see how the model performed.</p>
+        <dl class="archive">
+          <div><dt>Matches in archive</dt><dd id="archive-count">—</dd></div>
+          <div><dt>Latest result</dt><dd id="archive-date">—</dd></div>
+        </dl>
+      </div>
+      <div class="pitch" aria-hidden="true"><div></div></div>
+    </section>
+    <p id="startup-error" class="error" role="alert" hidden></p>
+
+    <section id="forecast" class="view" aria-labelledby="forecast-title">
+      <div class="section-heading">
+        <h2 id="forecast-title">Match forecast</h2>
+        <p>Every forecast uses results strictly before the selected date.</p>
+      </div>
+      <div class="forecast-grid">
+        <form id="forecast-form" class="card controls">
+          <h3>Choose a fixture</h3>
+          <label>Home club<select name="home" required disabled></select></label>
+          <label>Away club<select name="away" required disabled></select></label>
+          <label>Match date<input name="date" type="date" required disabled></label>
+          <button class="primary" type="submit" disabled>Run forecast <span aria-hidden="true">→</span></button>
+        </form>
+        <div class="card outlook" aria-busy="true">
+          <p id="forecast-status" class="notice" role="status">Loading forecast…</p>
+          <div id="forecast-output" hidden>
+            <p class="match-date" id="forecast-date"></p>
+            <h3 id="matchup"></h3>
+            <p class="favourite" id="favourite"></p>
+            <div class="probability-bar" id="probability-bar" aria-hidden="true"></div>
+            <dl class="probabilities" id="probabilities" aria-label="Outcome probabilities"></dl>
+            <div class="forecast-foot">
+              <p id="training-cutoff"></p>
+              <p id="actual-score" hidden></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-grid" id="club-form" hidden></div>
+    </section>
+
+    <section id="results" class="view" aria-labelledby="results-title" hidden>
+      <div class="section-heading">
+        <h2 id="results-title">Match archive</h2>
+        <p id="results-coverage"></p>
+      </div>
+      <form id="results-form" class="card toolbar">
+        <label>Calendar year<select name="year" required disabled></select></label>
+        <label>Club<select name="club" disabled><option value="">All clubs</option></select></label>
+      </form>
+      <p id="results-status" class="notice" role="status"></p>
+      <div class="card table-card" id="results-output" hidden>
+        <div class="table-heading"><h3>Final scores</h3><p id="results-count"></p></div>
+        <div class="table-scroll" tabindex="0" aria-label="Match archive table">
+          <table>
+            <thead><tr><th scope="col">Date</th><th scope="col">Home</th><th scope="col">Score</th><th scope="col">Away</th><th scope="col">Details</th></tr></thead>
+            <tbody id="results-rows"></tbody>
+          </table>
+        </div>
+        <div class="pagination" id="results-pagination" aria-label="Match archive pages"></div>
+      </div>
+    </section>
+
+    <section id="backtest" class="view" aria-labelledby="backtest-title" hidden>
+      <div class="section-heading">
+        <h2 id="backtest-title">Historical backtest</h2>
+        <p>The model refits each month using results available before the first evaluated fixture.</p>
+      </div>
+      <form id="backtest-form" class="card toolbar">
+        <label>From<input name="since" type="date" required disabled></label>
+        <label>Through<input name="until" type="date" required disabled></label>
+        <button class="primary" type="submit" disabled>Run backtest</button>
+      </form>
+      <p id="backtest-status" class="notice" role="status"></p>
+      <div id="backtest-output" hidden>
+        <div class="metrics" id="metrics"></div>
+        <div class="card matrix-card">
+          <div>
+            <h3>Outcome breakdown</h3>
+            <p id="matrix-detail"></p>
+            <p>Each cell counts fixtures. The diagonal shows correct calls.</p>
+          </div>
+          <div class="table-scroll" tabindex="0" aria-label="Confusion matrix">
+            <table id="matrix"></table>
+          </div>
+        </div>
+        <div class="card table-card">
+          <div class="table-heading">
+            <div><h3>Fixture predictions</h3><p>Probabilities shown in home win, draw, away win order.</p></div>
+            <a id="download" class="secondary" download>Download CSV</a>
+          </div>
+          <div class="table-scroll" tabindex="0" aria-label="Backtest results table">
+            <table>
+              <thead><tr><th scope="col">Date</th><th scope="col">Fixture</th><th scope="col">Score</th><th scope="col">Call</th><th scope="col">Probabilities</th></tr></thead>
+              <tbody id="backtest-rows"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="backtest-pagination" aria-label="Backtest pages"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="container site-footer">Source for the bundled archive <a href="https://football-data.co.uk/englandm.php">Football-Data.co.uk</a></footer>
+</body>
+</html>
