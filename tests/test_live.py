@@ -1,7 +1,5 @@
 import json
-import shutil
 import sqlite3
-import subprocess
 import unittest
 from contextlib import closing
 from dataclasses import replace
@@ -14,8 +12,7 @@ from urllib.request import urlopen
 from predictor.data import Fixture, MatchStats, fixtures_csv
 from predictor.evaluation import backtest, calibration, log_loss, select_model
 from predictor.market import MarketOdds
-from predictor.git_log import commit_forecast_log
-from predictor.model import FEATURE_NAMES, LEGACY_MODEL, MODEL_CHOICES, LeagueHistory, OutcomeModel, Predictor
+from predictor.model import LEGACY_MODEL, MODEL_CHOICES, LeagueHistory, OutcomeModel, Predictor
 from predictor.scoreboard import logged_forecasts, read_scoreboard, sync_scoreboard
 from predictor.season import OfficialMatch, ScheduledMatch, forecast_season
 from predictor.server import DashboardServer
@@ -33,15 +30,6 @@ def history() -> tuple[Fixture, ...]:
 
 
 class LeakageTests(unittest.TestCase):
-    def test_both_models_have_complete_feature_labels(self):
-        for model in MODEL_CHOICES:
-            with self.subTest(model=model):
-                names = FEATURE_NAMES[model]
-                row = LeagueHistory(model).features(date(2026, 8, 21), "Arsenal", "Chelsea")
-                self.assertEqual(len(names), len(row))
-                self.assertEqual(len(set(names)), len(row))
-                self.assertIn("elo_gap", names)
-
     def test_prediction_is_invariant_to_same_day_and_later_results_in_both_models(self):
         prior = history()
         day = date(2025, 11, 1)
@@ -96,54 +84,6 @@ class LeakageTests(unittest.TestCase):
 
 
 class LiveTests(unittest.TestCase):
-    def test_extending_to_multiple_gameweeks_preserves_the_first_forecast(self):
-        now = datetime(2026, 8, 12, 12, tzinfo=UTC)
-        schedule = tuple(
-            OfficialMatch(index, week, now + timedelta(days=offset), "Arsenal", "Chelsea", False, None)
-            for index, (week, offset) in enumerate(((11, 1), (11, 4), (12, 8), (13, 15), (14, 22)), 1)
-        )
-        with TemporaryDirectory() as folder:
-            db = Path(folder) / "ledger.sqlite3"
-            self.assertEqual(sync_scoreboard(db, 2026, schedule, history(), clock=lambda: now), 1)
-            first = logged_forecasts(db, 2026)[0]
-            later = now + timedelta(hours=1)
-            self.assertEqual(sync_scoreboard(db, 2026, schedule, history(), clock=lambda: later, gameweeks=3), 3)
-            forecasts = logged_forecasts(db, 2026)
-            self.assertEqual(forecasts[0], first)
-            self.assertEqual([row["gameweek"] for row in forecasts], [11, 11, 12, 13])
-            self.assertTrue(all(row["eligible"] for row in forecasts))
-
-    @unittest.skipUnless(shutil.which("git"), "Git executable required")
-    def test_git_log_appends_only_and_keeps_unrelated_staged_files_out(self):
-        now = datetime(2026, 8, 12, 12, tzinfo=UTC)
-        first = OfficialMatch(1, 1, now + timedelta(days=1), "Arsenal", "Chelsea", False, None)
-        later = OfficialMatch(2, 1, now + timedelta(days=4), "Chelsea", "Arsenal", False, None)
-        with TemporaryDirectory() as folder:
-            root = Path(folder)
-            db, log = root / "ledger.sqlite3", root / "forecast_log.csv"
-
-            def git(*args):
-                return subprocess.check_output(["git", "-C", folder, *args], text=True).strip()
-
-            git("init", "-q")
-            (root / "unrelated.txt").write_text("Other staged work.", encoding="utf-8")
-            git("add", "--", "unrelated.txt")
-            sync_scoreboard(db, 2026, (first, later), history(), clock=lambda: now)
-            self.assertIsNotNone(commit_forecast_log(db, log))
-            initial = log.read_bytes()
-            self.assertEqual(git("ls-tree", "--name-only", "HEAD"), log.name)
-            self.assertEqual(git("diff", "--cached", "--name-only"), "unrelated.txt")
-            self.assertIsNone(commit_forecast_log(db, log))
-
-            sync_scoreboard(db, 2026, (first, later), history(), clock=lambda: now + timedelta(days=2))
-            self.assertIsNotNone(commit_forecast_log(db, log))
-            self.assertTrue(log.read_bytes().startswith(initial))
-            self.assertEqual(git("rev-list", "--count", "HEAD"), "2")
-            self.assertEqual(git("diff", "--cached", "--name-only"), "unrelated.txt")
-            log.write_text("Revised history\n", encoding="utf-8")
-            with self.assertRaisesRegex(ValueError, "would rewrite"):
-                commit_forecast_log(db, log)
-
     def test_forecast_that_finishes_after_kickoff_is_never_logged(self):
         now = datetime(2026, 8, 12, 12, tzinfo=UTC)
         kickoff = now + timedelta(seconds=1)

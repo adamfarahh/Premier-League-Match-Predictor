@@ -13,6 +13,3 @@ __pycache__/
 /scoreboard*.csv
 /scoreboard*.sqlite3*
 /Premier_League_2026-27_Predictor.zip
-
-/full_season_picks.csv
-/projected_final_standings.csv

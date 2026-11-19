@@ -6,17 +6,6 @@ This project uses past Premier League results to predict a home win, a draw, or 
 
 > I used Premier League results from 2010 to 2026 to build a match predictor. It looks at how strong each team is and how it has played recently. I tested it by going through past matches in order and making each prediction using only the results available before that match.
 
-## Set up after downloading from GitHub
-
-From this folder, install the notebook tools and download the results from their source.
-
-```sh
-python -m pip install -r requirements-notebook.txt
-python -m predictor refresh
-```
-
-In the season section at the bottom, set `LIVE_SEASON = True` to load the official schedule. For offline use, place your local `fixtures_2026_27.csv` beside the notebook.
-
 ## How to run it
 
 1. Open [Premier_League_Predictor.ipynb](Premier_League_Predictor.ipynb) and choose **Run All**. Keep `premier_league.csv` and `fixtures_2026_27.csv` beside the notebook.
