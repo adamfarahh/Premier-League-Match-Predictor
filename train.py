@@ -68,3 +68,14 @@ def backtest(df: pd.DataFrame, min_train_seasons: int = 3) -> pd.DataFrame:
         out.append(row)
     return pd.DataFrame(out)
 
+def main(use_synth: bool) -> None:
+    if use_synth:
+        raw = synthetic()
+    else:
+        raw = pd.read_csv(PROCESSED, parse_dates=["Date"])
+    df = build_features(raw)
+    results = backtest(df)
+    pd.set_option('display.width', 160)
+    print(results.round(4).to_string(index = False))
+    print("\nmean:\n", results.drop(columns = ["season", "n"]).mean().round(4).to_string())
+    
