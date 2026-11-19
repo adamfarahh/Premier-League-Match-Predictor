@@ -26,3 +26,12 @@ def form(team: str, date) -> tuple [float, float, float, float]:
     ga = np.mean([x[3] for x in h])
     rest = min((date - h[-1][0]).days, 14)
     return pts, gf, ga, rest
+
+    for r in df.itertuples():
+        h, a = r.HomeTeam, r.AwayTeam
+        eh, ea = elo.get(h, ELO_START), elo.get(a, ELO_START)
+        hp, hgf, hga, rest = form(h, r.Date)
+        ap_, agf, aga, rest = form(a, r.Date)
+        res_d
+
+    return pd.concat([df, pd.DataFrame(rows)], axis = 1)
